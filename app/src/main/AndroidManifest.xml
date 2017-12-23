@@ -32,7 +32,7 @@
             android:name="com.example.android.todolist.data.TaskContentProvider"
             android:authorities="com.example.android.todolist"
             android:exported="false"/>
-
+        <receiver android:name="AlarmReceiver" />
     </application>
 
 </manifest>

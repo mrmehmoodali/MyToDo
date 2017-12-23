@@ -16,22 +16,34 @@
 
 package com.example.android.todolist;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.icu.util.Calendar;
+import android.icu.util.GregorianCalendar;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.android.todolist.data.TaskContract;
+
+import static android.app.PendingIntent.*;
 
 
 public class AddTaskActivity extends AppCompatActivity {
 
     // Declare a member variable to keep track of a task's selected mPriority
     private int mPriority;
+    private boolean mSwitch;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +81,12 @@ public class AddTaskActivity extends AppCompatActivity {
         // Display the URI that's returned with a Toast
         // [Hint] Don't forget to call finish() to return to MainActivity after this insert is complete
         if(uri != null) {
-            Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+        }
+
+        //call alarm
+        if (mSwitch) {
+            scheduleAlarm(view);
         }
 
         // Finish activity (this returns back to MainActivity)
@@ -90,5 +107,36 @@ public class AddTaskActivity extends AppCompatActivity {
         } else if (((RadioButton) findViewById(R.id.radButton3)).isChecked()) {
             mPriority = 3;
         }
+    }
+
+    // reminder add test
+
+    public void onReminderSelected(View view) {
+
+        if (((Switch) findViewById(R.id.switch1)).isChecked()) {
+            mSwitch = true;
+        }
+    }
+
+    public void scheduleAlarm(View view) {
+        // long when = System.currentTimeMillis()+2*60*1000;         // notification time
+
+        //Calendar calendar =  Calendar.getInstance();
+        // notification time
+
+        long when = System.currentTimeMillis()+10*1000;
+
+        Intent intentAlarm = new Intent(this, AlarmReceiver.class);
+
+        // create the object
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+
+        //set the alarm for particular time
+        if (alarmManager != null) {
+            alarmManager.set(AlarmManager.RTC_WAKEUP,when,
+                    PendingIntent.getBroadcast(this,1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
+        }
+
+        Toast.makeText(this, "Alarm set ",Toast.LENGTH_LONG).show();
     }
 }

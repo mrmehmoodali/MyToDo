@@ -4,6 +4,7 @@
     This includes an EditText to add a task description, and buttons to select a priority
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -95,9 +96,9 @@
                 android:id="@+id/radButton1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onPrioritySelected"
                 android:layout_weight="1"
-                android:theme="@style/WhiteRadioButton"/>
+                android:onClick="onPrioritySelected"
+                android:theme="@style/WhiteRadioButton" />
 
             <RadioButton
                 android:id="@+id/radButton2"
@@ -122,13 +123,23 @@
     <!-- Add button -->
     <Button
         android:id="@+id/addButton"
+        style="@style/TextAppearance.AppCompat.Large"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/add_button"
-        style="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@android:color/primary_text_dark"
         android:background="@color/colorPrimary"
-        android:onClick="onClickAddTask"/>
+        android:onClick="onClickAddTask"
+        android:text="@string/add_button"
+        android:textColor="@android:color/primary_text_dark" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="match_parent"
+        android:layout_height="69dp"
+        android:checked="false"
+        android:onClick="onReminderSelected"
+        android:text="@string/reminder"
+        android:textSize="20sp"
+        tools:checked="false" />
 
 </LinearLayout>
