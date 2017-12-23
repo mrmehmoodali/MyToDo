@@ -18,11 +18,10 @@ package com.example.android.todolist;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.icu.util.Calendar;
-import android.icu.util.GregorianCalendar;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,9 +31,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Switch;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.android.todolist.data.TaskContract;
+
+import java.util.Calendar;
 
 import static android.app.PendingIntent.*;
 
@@ -44,6 +46,7 @@ public class AddTaskActivity extends AppCompatActivity {
     // Declare a member variable to keep track of a task's selected mPriority
     private int mPriority;
     private boolean mSwitch;
+    public long when;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +118,28 @@ public class AddTaskActivity extends AppCompatActivity {
 
         if (((Switch) findViewById(R.id.switch1)).isChecked()) {
             mSwitch = true;
+            //picker
+            final Calendar mCurrentTime = Calendar.getInstance();
+            int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
+            int minute = mCurrentTime.get(Calendar.MINUTE);
+            TimePickerDialog mTimePicker;
+            mTimePicker = new TimePickerDialog(AddTaskActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                    mCurrentTime.set(Calendar.HOUR_OF_DAY, hour);
+                    mCurrentTime.set(Calendar.MINUTE, minute);
+                    when = mCurrentTime.getTimeInMillis();
+                    //long tempCurr = System.currentTimeMillis();
+                    //long diff = tempCurr - when;
+                    //Toast.makeText(getBaseContext(), "Alarm set for " + when
+                    //        + "current time " + tempCurr,Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getBaseContext(), "Alarm diff for " + diff
+                    //       ,Toast.LENGTH_LONG).show();
+
+                }
+            }, hour, minute, true);//Yes 24 hour time
+            mTimePicker.setTitle("Select Time");
+            mTimePicker.show();
         }
     }
 
@@ -123,20 +148,21 @@ public class AddTaskActivity extends AppCompatActivity {
 
         //Calendar calendar =  Calendar.getInstance();
         // notification time
-
-        long when = System.currentTimeMillis()+10*1000;
+        //long tempCurr = System.currentTimeMillis();
+        //long when = System.currentTimeMillis()+10*1000;
 
         Intent intentAlarm = new Intent(this, AlarmReceiver.class);
 
         // create the object
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-
+        //Toast.makeText(getBaseContext(), "Alarm set for " + when
+        //        + "current time " + tempCurr,Toast.LENGTH_LONG).show();
         //set the alarm for particular time
         if (alarmManager != null) {
             alarmManager.set(AlarmManager.RTC_WAKEUP,when,
                     PendingIntent.getBroadcast(this,1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
         }
 
-        Toast.makeText(this, "Alarm set ",Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Alarm set ",Toast.LENGTH_LONG).show();
     }
 }
